@@ -1,0 +1,197 @@
+1. INSERT — Add a Book (books table).
+
+INSERT INTO books (isbn, title, author_name, genre, publisher, publication_year, language_code, page_count, call_number, allocated_branch_id, shelf_location, status)
+VALUES ('BBM-Method-1123', 'BBM & INDAY FRIENDSHIP STORY', 'Roland Baesa', 'Fantasy', 'The OVP', 2026, 'FILI', 300, '+6399999999999', 1, 'LIKOD NG BAHAY', 'Available');
+
+2. UPDATE — Modify a Book
+
+UPDATE books
+SET
+    genre = 'Adventure',
+    status = 'Lost'
+WHERE book_id = 1037; (based to the book_id)
+
+3. DELETE — Remove a Book
+
+DELETE FROM books
+WHERE book_id = '1037'; 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+Basic Select Queries
+
+Display All books/book_loans/members/branches.
+
+SELECT * FROM books; 
+
+2. Display Specific Columns
+
+SELECT title, author_name, genre
+FROM books;
+
+3. Filter Books by Status
+
+SELECT title, author_name, status
+FROM books
+WHERE status = 'Available';
+
+4. Sort Books Alphabetically
+
+SELECT title, author_name, genre
+FROM books
+ORDER BY title ASC;
+
+Basic Filtered Query (SELECT, WHERE, ORDER BY)
+
+SELECT title, author_name, genre, status
+FROM books
+WHERE status = 'Available'
+ORDER BY title ASC;
+
+
+////////////////////////////////////////////////////////////////////////
+
+Aggregated Summary: Step-by-Step SQL Queries
+
+1. GROUP BY
+
+SELECT membership_type
+FROM members
+GROUP BY membership_type;
+
+2. COUNT()
+
+SELECT COUNT(*) AS total_books
+FROM books;
+
+3. AVG()
+
+SELECT AVG(page_count) AS average_pages
+FROM books;
+
+Aggregated Summary (using GROUP BY, COUNT, AVG)
+
+SELECT
+    genre,
+    COUNT(*) AS total_books,
+    ROUND(AVG(page_count), 2) AS average_pages
+FROM books
+GROUP BY genre;
+
+or;
+
+SELECT
+    genre,
+    COUNT(*) AS total_books,
+    ROUND(AVG(page_count), 2) AS average_pages
+FROM books
+GROUP BY genre
+ORDER BY total_books DESC;
+
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+Multi-Table Relationship (using JOIN)
+
+(2 Different Tables from Books and Branches)
+
+SELECT
+    b.title,
+    b.author_name,
+    br.branch_name
+FROM books AS b
+INNER JOIN branches AS br
+    ON b.allocated_branch_id = br.branch_id;
+
+(3 Different Tables from Member (members), Book Title (books), and Loan Status (book_loans))
+
+SELECT
+    m.first_name,
+    m.last_name,
+    b.title,
+    bl.loan_status
+FROM members AS m
+INNER JOIN book_loans AS bl
+    ON m.member_id = bl.member_id
+INNER JOIN books AS b
+    ON bl.book_id = b.book_id;
+
+(4 Different Tables from members, books, book_loans, and branches)
+
+SELECT
+    m.first_name,
+    m.last_name,
+    b.title AS book_title,
+    bl.loan_status AS loan_status,
+    br.branch_name
+FROM members AS m
+INNER JOIN book_loans AS bl
+    ON m.member_id = bl.member_id
+INNER JOIN books AS b
+    ON bl.book_id = b.book_id
+INNER JOIN branches AS br
+    ON b.allocated_branch_id = br.branch_id;
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+Financial/Categorical Breakdown: Step-by-Step SQL Queries.
+
+SUM()
+
+SELECT SUM(page_count) AS total_pages
+FROM books;
+
+2. ROUND()
+
+SELECT ROUND(AVG(page_count), 2) AS average_pages
+FROM books;
+
+Financial/Categorical Breakdown (using SUM, ROUND)
+
+SELECT
+    genre,
+    SUM(page_count) AS total_pages,
+    ROUND(AVG(page_count), 2) AS average_pages
+FROM books
+GROUP BY genre;
+
+or if highest to lowest;
+
+SELECT
+    genre,
+    SUM(page_count) AS total_pages,
+    ROUND(AVG(page_count), 2) AS average_pages
+FROM books
+GROUP BY genre
+ORDER BY average_pages DESC;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Conditional Aggregation (Using HAVING)
+
+Group()
+
+SELECT
+    genre,
+    COUNT(*) AS total_books
+FROM books
+GROUP BY genre; (to see the total genre and their total books)
+
+Having()
+
+SELECT
+    genre,
+    COUNT(*) AS total_books
+FROM books
+GROUP BY genre
+HAVING COUNT(*) = 166;
+
+or 
+
+SELECT
+    genre,
+    COUNT(*) AS total_books
+FROM books
+GROUP BY genre
+HAVING COUNT(*) = 167;
